@@ -1,51 +1,46 @@
 import { Loader } from 'components/Loader/Loader';
-import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Overlay } from 'styled';
 
-export class ModalImage extends Component {
-  state = {
-    imageLoaded: false,
+export const ModalImage = ({ handleCloseModal, modalData }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
   };
 
-  handleImageLoad = () => {
-    this.setState({ imageLoaded: true });
-  };
-  handleOverlayClick = evt => {
+  const handleOverlayClick = evt => {
     if (evt.target === evt.currentTarget) {
-      this.props.handleCloseModal();
+      handleCloseModal();
     }
   };
 
-  handleKeyPress = evt => {
-    if (evt.code === 'Escape') {
-      this.props.handleCloseModal();
-    }
-  };
+  useEffect(() => {
+    const handleKeyPress = evt => {
+      if (evt.code === 'Escape') {
+        handleCloseModal();
+      }
+    };
 
-  componentDidMount() {
     document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', this.handleKeyPress);
-  }
+    window.addEventListener('keydown', handleKeyPress);
 
-  componentWillUnmount() {
-    document.body.style.overflow = 'auto';
-    window.removeEventListener('keydown', this.handleKeyPress);
-  }
+    return () => {
+      document.body.style.overflow = 'auto';
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleCloseModal]);
 
-  render() {
-    const { imageLoaded } = this.state;
-
-    return (
-      <Overlay onClick={this.handleOverlayClick}>
-        {imageLoaded ? null : <Loader />}
-        <Modal>
-          <img
-            src={this.props.modalData.largeImageURL}
-            alt={this.props.modalData.tags}
-            onLoad={this.handleImageLoad}
-          />
-        </Modal>
-      </Overlay>
-    );
-  }
-}
+  return (
+    <Overlay onClick={handleOverlayClick}>
+      {imageLoaded ? null : <Loader />}
+      <Modal>
+        <img
+          src={modalData.largeImageURL}
+          alt={modalData.tags}
+          onLoad={handleImageLoad}
+        />
+      </Modal>
+    </Overlay>
+  );
+};

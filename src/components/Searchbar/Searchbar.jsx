@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   Header,
   SearchForm,
@@ -6,39 +6,36 @@ import {
   SearchBtnLabel,
   SearchFormInput,
 } from 'styled';
-export default class Searchbar extends Component {
-  state = {
-    query: '',
-  };
 
-  handleSubmitForm = evt => {
+export const Searchbar = ({ onSubmit }) => {
+  const [query, setQuery] = useState('');
+
+  const handleSubmitForm = evt => {
     evt.preventDefault();
-    this.props.onSubmit(this.state.query);
+    onSubmit(query);
   };
 
-  handleChangeFilter = evt => {
-    this.setState({ query: evt.target.value });
+  const handleChangeFilter = evt => {
+    setQuery(evt.target.value);
   };
 
-  render() {
-    return (
-      <Header>
-        <SearchForm onSubmit={this.handleSubmitForm}>
-          <SearchFormButton type="submit">
-            <SearchBtnLabel>Search</SearchBtnLabel>
-          </SearchFormButton>
+  return (
+    <Header>
+      <SearchForm onSubmit={handleSubmitForm}>
+        <SearchFormButton type="submit">
+          <SearchBtnLabel>Search</SearchBtnLabel>
+        </SearchFormButton>
 
-          <SearchFormInput
-            onChange={this.handleChangeFilter}
-            className="form"
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            required
-          />
-        </SearchForm>
-      </Header>
-    );
-  }
-}
+        <SearchFormInput
+          onChange={handleChangeFilter}
+          className="form"
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          required
+        />
+      </SearchForm>
+    </Header>
+  );
+};
